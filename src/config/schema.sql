@@ -69,3 +69,6 @@ CREATE TABLE IF NOT EXISTS audit_logs (
 -- 6. Enforce Append-Only Immutability: Block UPDATE and DELETE on audit_logs
 CREATE OR REPLACE RULE no_update_audit AS ON UPDATE TO audit_logs DO INSTEAD NOTHING;
 CREATE OR REPLACE RULE no_delete_audit AS ON DELETE TO audit_logs DO INSTEAD NOTHING;
+
+-- 7. Audit Ledger Table / View (Tamper-evident append-only ledger alias)
+CREATE OR REPLACE VIEW audit_ledger AS SELECT * FROM audit_logs;

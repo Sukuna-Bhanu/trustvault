@@ -97,4 +97,32 @@ router.post('/revoke', authenticateJWT, async (req: Request, res: Response): Pro
     }
 });
 
+// List Active Grants for Document
+router.get('/grants/:documentId', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const user = req.user!;
+    const docId = Array.isArray(req.params.documentId) ? req.params.documentId[0] : req.params.documentId;
+    const client = await pool.connect();
+    try {
+        const docRes = await client.query('SELECT owner_id FROM documents WHERE id = $1', [docId]);
+        if (docRes.rows.length === 0 || (user.role !== 'ADMIN' && docRes.rows[0].owner_id !== user.id)) {
+            res.status(404).json({ error: 'Document not found' });
+            return;
+        }
+
+        const grantsRes = await client.query(
+            `SELECT dg.id, dg.document_id, dg.user_id, dg.permission, dg.created_at, u.email as user_email
+             FROM document_grants dg
+             JOIN users u ON dg.user_id = u.id
+             WHERE dg.document_id = $1
+             ORDER BY dg.created_at DESC`,
+            [docId]
+        );
+        res.json({ grants: grantsRes.rows });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve grants' });
+    } finally {
+        client.release();
+    }
+});
+
 export default router;

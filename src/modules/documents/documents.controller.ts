@@ -29,6 +29,54 @@ function detectMimeType(buffer: Buffer): string | null {
     return null;
 }
 
+// List Accessible Documents with Real-Time DB Enforcement
+router.get('/', authenticateJWT, async (req: Request, res: Response): Promise<void> => {
+    const user = req.user!;
+    const client = await pool.connect();
+    try {
+        let query = '';
+        let params: any[] = [];
+
+        if (user.role === 'ADMIN') {
+            query = `
+                SELECT d.id, d.original_name, d.mime_type, d.file_size, d.category, d.created_at, d.owner_id, u.email as owner_email,
+                       'OWNER' as user_access
+                FROM documents d
+                JOIN users u ON d.owner_id = u.id
+                ORDER BY d.created_at DESC
+            `;
+        } else if (user.role === 'OWNER') {
+            query = `
+                SELECT d.id, d.original_name, d.mime_type, d.file_size, d.category, d.created_at, d.owner_id, u.email as owner_email,
+                       CASE WHEN d.owner_id = $1 THEN 'OWNER' ELSE COALESCE(dg.permission::text, 'NONE') END as user_access
+                FROM documents d
+                JOIN users u ON d.owner_id = u.id
+                LEFT JOIN document_grants dg ON dg.document_id = d.id AND dg.user_id = $1
+                WHERE d.owner_id = $1 OR dg.id IS NOT NULL
+                ORDER BY d.created_at DESC
+            `;
+            params = [user.id];
+        } else {
+            query = `
+                SELECT d.id, d.original_name, d.mime_type, d.file_size, d.category, d.created_at, d.owner_id, u.email as owner_email,
+                       COALESCE(dg.permission::text, 'NONE') as user_access
+                FROM documents d
+                JOIN users u ON d.owner_id = u.id
+                JOIN document_grants dg ON dg.document_id = d.id AND dg.user_id = $1
+                ORDER BY d.created_at DESC
+            `;
+            params = [user.id];
+        }
+
+        const result = await client.query(query, params);
+        res.json({ documents: result.rows });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve documents' });
+    } finally {
+        client.release();
+    }
+});
+
 // 1. Secure Upload with Magic-Byte Inspection
 router.post('/upload', authenticateJWT, upload.single('file'), async (req: Request, res: Response): Promise<void> => {
     const user = req.user!;

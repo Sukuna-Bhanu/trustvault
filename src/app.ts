@@ -1,3 +1,4 @@
+import path from 'path';
 import express from 'express';
 import dotenv from 'dotenv';
 import authRoutes from './modules/auth/auth.controller';
@@ -12,8 +13,12 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-// Health & Root Status
-app.get('/', (req, res) => {
+// Serve static assets from public/ directory
+const publicDir = path.join(process.cwd(), 'public');
+app.use(express.static(publicDir));
+
+// API Status & Health
+app.get('/api/status', (req, res) => {
     res.json({
         name: 'TrustVault API',
         status: 'ONLINE',
@@ -46,6 +51,7 @@ app.get('/api/audit/verify', authenticateJWT, async (req, res): Promise<void> =>
         res.json({
             status: verification.valid ? 'INTACT' : 'TAMPERED',
             details: verification,
+            chain: verification.chain,
         });
     } catch (err) {
         res.status(500).json({ error: 'Verification failed' });
@@ -55,8 +61,10 @@ app.get('/api/audit/verify', authenticateJWT, async (req, res): Promise<void> =>
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`TrustVault server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(PORT, () => {
+        console.log(`TrustVault server running on port ${PORT}`);
+    });
+}
 
 export default app;

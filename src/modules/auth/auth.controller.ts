@@ -48,4 +48,26 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 });
 
+router.get('/seed-accounts', (req: Request, res: Response): void => {
+    res.json({
+        accounts: [
+            { email: 'admin@trustvault.local', password: 'AdminPass123!', role: 'ADMIN', label: 'Admin' },
+            { email: 'owner@trustvault.local', password: 'OwnerPass123!', role: 'OWNER', label: 'Owner' },
+            { email: 'viewer@trustvault.local', password: 'ViewerPass123!', role: 'VIEWER', label: 'Viewer' },
+        ],
+    });
+});
+
+router.get('/users', async (req: Request, res: Response): Promise<void> => {
+    const client = await pool.connect();
+    try {
+        const result = await client.query('SELECT id, email, role, created_at FROM users ORDER BY role ASC, email ASC');
+        res.json({ users: result.rows });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve users' });
+    } finally {
+        client.release();
+    }
+});
+
 export default router;

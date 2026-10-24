@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustVault | Zero-Trust Cryptographic Document Vault</title>
+    <meta name="description" content="High-assurance document security system featuring real-time DB authorization, 404 concealment, magic-byte MIME validation, and SHA-256 hash-chained immutable audit ledger.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Header -->
+        <header class="navbar">
+            <div class="nav-brand">
+                <div class="brand-shield">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">TrustVault</h1>
+                    <span class="brand-subtitle">Zero-Trust Cryptographic Document Vault</span>
+                </div>
+            </div>
+
+            <div class="nav-meta">
+                <div class="system-status-chip" id="system-status-chip">
+                    <span class="status-dot pulsing"></span>
+                    <span class="status-text" id="system-status-text">Server: Online • SHA-256 Ledger</span>
+                </div>
+                <div class="session-user-badge" id="nav-session-user">
+                    <span class="role-pill role-none" id="nav-role-badge">NO SESSION</span>
+                    <span class="user-email-text" id="nav-user-email">Not Authenticated</span>
+                    <button id="btn-logout" class="btn-icon" title="Clear Session" style="display: none;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Dashboard Grid -->
+        <main class="dashboard-grid">
+            
+            <!-- PANEL 1: Auth & Role Switcher -->
+            <section class="panel card" id="panel-auth">
+                <div class="card-header">
+                    <div class="card-header-icon auth-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                            <circle cx="12" cy="7" r="4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Identity &amp; Session Matrix</h2>
+                        <p class="section-desc">Fast-switch seed accounts or authenticate custom credentials</p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Quick Switch Cards -->
+                    <label class="input-label">Seed Persona Fast Switcher:</label>
+                    <div class="persona-grid">
+                        <button type="button" class="persona-btn active" id="btn-switch-admin" data-email="admin@trustvault.local" data-pass="AdminPass123!">
+                            <div class="persona-header">
+                                <span class="role-pill role-admin">ADMIN</span>
+                                <span class="persona-tag">Full Access</span>
+                            </div>
+                            <span class="persona-email">admin@trustvault.local</span>
+                            <span class="persona-desc">Inspects SHA-256 Ledger &amp; Full System Auditing</span>
+                        </button>
+
+                        <button type="button" class="persona-btn" id="btn-switch-owner" data-email="owner@trustvault.local" data-pass="OwnerPass123!">
+                            <div class="persona-header">
+                                <span class="role-pill role-owner">OWNER</span>
+                                <span class="persona-tag">Document Owner</span>
+                            </div>
+                            <span class="persona-email">owner@trustvault.local</span>
+                            <span class="persona-desc">Uploads Files &amp; Grants/Revokes Dynamic Access</span>
+                        </button>
+
+                        <button type="button" class="persona-btn" id="btn-switch-viewer" data-email="viewer@trustvault.local" data-pass="ViewerPass123!">
+                            <div class="persona-header">
+                                <span class="role-pill role-viewer">VIEWER</span>
+                                <span class="persona-tag">404 Concealment</span>
+                            </div>
+                            <span class="persona-email">viewer@trustvault.local</span>
+                            <span class="persona-desc">Zero Access by Default. Unauthorized = 404 Not Found</span>
+                        </button>
+                    </div>
+
+                    <!-- Current Active Session Details -->
+                    <div class="session-box" id="session-box">
+                        <div class="session-box-header">
+                            <span class="session-box-title">Active JWT Session Details</span>
+                            <button id="btn-copy-token" class="btn-xs btn-outline" title="Copy JWT">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                Copy JWT
+                            </button>
+                        </div>
+                        <div class="session-meta-row">
+                            <span class="meta-label">User UUID:</span>
+                            <code class="meta-code" id="session-user-id">Loading...</code>
+                            <button id="btn-copy-user-id" class="btn-xs btn-outline" title="Copy User ID">Copy ID</button>
+                        </div>
+                        <div class="session-meta-row">
+                            <span class="meta-label">Auth Token:</span>
+                            <code class="meta-code meta-token" id="session-token-preview">No active token</code>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Manual Login -->
+                    <details class="manual-auth-details">
+                        <summary class="details-summary">Manual Credential Login</summary>
+                        <form id="form-manual-login" class="manual-login-form">
+                            <div class="form-group">
+                                <label for="input-login-email">Email Address</label>
+                                <input type="email" id="input-login-email" class="input-text" placeholder="name@trustvault.local" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="input-login-password">Password</label>
+                                <input type="password" id="input-login-password" class="input-text" placeholder="••••••••••••" required>
+                            </div>
+                            <button type="submit" id="btn-manual-login" class="btn btn-primary">Sign In with Credentials</button>
+                        </form>
+                    </details>
+                </div>
+            </section>
+
+            <!-- PANEL 2: Document Vault & Magic-Byte Validation -->
+            <section class="panel card" id="panel-documents">
+                <div class="card-header">
+                    <div class="card-header-icon vault-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                            <polyline points="10 9 9 9 8 9"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Document Vault</h2>
+                        <p class="section-desc">Raw magic-byte validation, disk storage &amp; real-time authorization</p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Magic Byte Notice Banner -->
+                    <div class="info-alert">
+                        <div class="info-alert-icon">🛡️</div>
+                        <div class="info-alert-text">
+                            <strong>Standard 3 Enforcement:</strong> Multi-part upload validates file buffer signatures (PDF <code>%PDF</code>, PNG <code>\x89PNG</code>, JPEG <code>\xFF\xD8\xFF</code>). Spoofed extensions disguised as PDFs are rejected with HTTP 400.
+                        </div>
+                    </div>
+
+                    <!-- Upload Form & Drop Zone -->
+                    <form id="form-upload-document" class="upload-container">
+                        <div class="drop-zone" id="drop-zone">
+                            <input type="file" id="input-file" class="file-input-hidden" accept=".pdf,.png,.jpg,.jpeg">
+                            <div class="drop-zone-content">
+                                <svg class="drop-icon" viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="17 8 12 3 7 8"/>
+                                    <line x1="12" y1="3" x2="12" y2="15"/>
+                                </svg>
+                                <span class="drop-zone-title" id="drop-zone-title">Drag &amp; drop document, or <span class="browse-link">browse</span></span>
+                                <span class="drop-zone-subtitle">Supported: PDF, PNG, JPEG (Verified via raw magic header bytes)</span>
+                                <span class="selected-file-name" id="selected-file-name"></span>
+                            </div>
+                        </div>
+
+                        <div class="upload-meta-row">
+                            <div class="form-group flex-1">
+                                <label for="select-category">Classification Category</label>
+                                <select id="select-category" class="input-select">
+                                    <option value="confidential">Confidential</option>
+                                    <option value="financial">Financial Audit</option>
+                                    <option value="legal">Legal &amp; Compliance</option>
+                                    <option value="intel">Classified Intel</option>
+                                </select>
+                            </div>
+                            <button type="submit" id="btn-upload" class="btn btn-primary btn-upload-action">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                                Upload Securely
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Magic Byte Signature Verification Feedback Banner -->
+                    <div id="upload-feedback" class="feedback-banner" style="display: none;"></div>
+
+                    <!-- Quick Adversarial Test Generators -->
+                    <div class="test-generator-box">
+                        <span class="test-gen-label">Adversarial Magic-Byte Demos:</span>
+                        <div class="test-gen-buttons">
+                            <button type="button" id="btn-test-real-pdf" class="btn-sm btn-success">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                Test Genuine PDF (Accepts 201)
+                            </button>
+                            <button type="button" id="btn-test-fake-pdf" class="btn-sm btn-danger">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                Test Disguised Executable (Rejects 400)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Authorized Documents List -->
+                    <div class="documents-list-section">
+                        <div class="section-subhead">
+                            <h3>Authorized Documents in Vault</h3>
+                            <button id="btn-refresh-docs" class="btn-xs btn-outline" title="Refresh Vault">
+                                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                Refresh
+                            </button>
+                        </div>
+                        <div id="documents-table-container" class="table-responsive">
+                            <table class="data-table" id="table-documents">
+                                <thead>
+                                    <tr>
+                                        <th>File Name</th>
+                                        <th>Type / Category</th>
+                                        <th>Size</th>
+                                        <th>Document UUID</th>
+                                        <th>Owner</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="documents-tbody">
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Loading documents...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL 3: Real-Time Dynamic Permissions -->
+            <section class="panel card" id="panel-permissions">
+                <div class="card-header">
+                    <div class="card-header-icon perm-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Permission Manager</h2>
+                        <p class="section-desc">Real-time DB grants, instantaneous revocation &amp; 404 concealment</p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Explanation Alert -->
+                    <div class="info-alert info-alert-amber">
+                        <div class="info-alert-icon">⚡</div>
+                        <div class="info-alert-text">
+                            <strong>Standard 1 Enforcement:</strong> No permissions are cached in JWTs. Access is re-verified against <code>documents</code> and <code>document_grants</code> on every request. Revoking access causes immediate cutoff returning uniform <code>404 Not Found</code>.
+                        </div>
+                    </div>
+
+                    <form id="form-permission" class="permission-form">
+                        <div class="form-group">
+                            <label for="input-target-doc-id">Document ID (UUID)</label>
+                            <div class="input-with-button">
+                                <input type="text" id="input-target-doc-id" class="input-text code-font" placeholder="e.g. b9924f28-0f6b-46db-abc9-5e8921b06499" required>
+                                <button type="button" id="btn-select-latest-doc" class="btn-sm btn-outline">Select Latest</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="input-target-user-id">Target User ID (UUID)</label>
+                            <div class="input-with-button">
+                                <input type="text" id="input-target-user-id" class="input-text code-font" placeholder="e.g. 54e0529c-8b6a-475e-b7ab-77614ece8f0c" required>
+                                <button type="button" id="btn-select-viewer-id" class="btn-sm btn-outline">Select Viewer</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="select-permission-type">Permission Level</label>
+                            <select id="select-permission-type" class="input-select">
+                                <option value="READ">READ (Download &amp; Inspect)</option>
+                                <option value="EDIT">EDIT (Modify &amp; Version)</option>
+                            </select>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="perm-action-buttons">
+                            <button type="button" id="btn-grant-perm" class="btn btn-success flex-1">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                                GRANT ACCESS
+                            </button>
+                            <button type="button" id="btn-revoke-perm" class="btn btn-danger flex-1">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+                                REVOKE ACCESS (Immediate Cutoff)
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="permission-feedback" class="feedback-banner" style="display: none;"></div>
+
+                    <!-- Target Document Active Grants -->
+                    <div class="grants-section">
+                        <div class="section-subhead">
+                            <h3>Active Document Grants</h3>
+                            <button id="btn-refresh-grants" class="btn-xs btn-outline">Check Grants</button>
+                        </div>
+                        <div id="grants-list-container" class="grants-list-container">
+                            <p class="text-muted text-sm" id="grants-placeholder">Select or enter a Document ID to view active delegations.</p>
+                            <ul class="grants-list" id="grants-list"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PANEL 4: Cryptographic Audit Ledger Inspector -->
+            <section class="panel card" id="panel-audit">
+                <div class="card-header">
+                    <div class="card-header-icon audit-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2>Cryptographic Audit Ledger</h2>
+                        <p class="section-desc">SHA-256 hash-chained immutable audit log with full verification</p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <!-- Verification Control Bar -->
+                    <div class="ledger-control-bar">
+                        <div>
+                            <span class="control-label">Ledger Integrity Engine:</span>
+                            <p class="control-hint">Recalculates full hash chain from genesis (<code>0000000000000000...</code>) to head block.</p>
+                        </div>
+                        <button id="btn-verify-ledger" class="btn btn-primary btn-verify-action">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            Verify Ledger Integrity
+                        </button>
+                    </div>
+
+                    <!-- Verification Status Banner -->
+                    <div id="ledger-status-banner" class="ledger-status-banner status-pending">
+                        <div class="status-indicator-box">
+                            <span class="status-badge-chip" id="ledger-badge-chip">UNVERIFIED</span>
+                            <span class="status-headline" id="ledger-headline">Click "Verify Ledger Integrity" to scan hash chain</span>
+                        </div>
+                        <div class="status-stats" id="ledger-stats">
+                            <span id="ledger-total-blocks">Blocks: --</span>
+                            <span id="ledger-verified-at">Last Verified: Never</span>
+                        </div>
+                    </div>
+
+                    <!-- Chronological Hash Chain Timeline -->
+                    <div class="chain-timeline-section">
+                        <div class="section-subhead">
+                            <h3>Chronological Hash Chain</h3>
+                            <span class="text-xs text-muted">Formula: SHA256(prev_hash + actor + action + doc + status + timestamp)</span>
+                        </div>
+
+                        <div class="chain-explorer" id="chain-explorer">
+                            <div class="text-center text-muted" style="padding: 2rem;">Ledger timeline will appear upon integrity check or session load.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-content">
+                <span>TrustVault Security Core v1.0.0 &bull; Built with Express, TypeScript &amp; PostgreSQL (Neon)</span>
+                <span class="footer-links">
+                    <a href="/api/status" target="_blank">API Health Status</a> &bull;
+                    <a href="https://github.com/Sukuna-Bhanu/trustvault" target="_blank">GitHub Repository</a>
+                </span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/app.js"></script>
+</body>
+</html>

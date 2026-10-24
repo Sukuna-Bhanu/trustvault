@@ -44,22 +44,22 @@ export async function logAuditEvent(client: PoolClient, params: AuditLogParams):
     );
 }
 
-export async function verifyAuditLedger(client: PoolClient): Promise<{ valid: boolean; brokenAtId?: string }> {
+export async function verifyAuditLedger(client: PoolClient): Promise<{ valid: boolean; brokenAtId?: string; chain: any[] }> {
     const rows = (await client.query('SELECT * FROM audit_logs ORDER BY timestamp ASC, id ASC')).rows;
     let expectedPrevHash = GENESIS_HASH;
 
     for (const row of rows) {
         if (row.previous_hash !== expectedPrevHash) {
-            return { valid: false, brokenAtId: row.id };
+            return { valid: false, brokenAtId: row.id, chain: rows };
         }
         const payload = `${row.previous_hash}|${row.actor_id || 'ANON'}|${row.action}|${row.target_document_id || 'NONE'}|${row.status}|${new Date(row.timestamp).toISOString()}`;
         const recalculated = crypto.createHash('sha256').update(payload).digest('hex');
 
         if (recalculated !== row.current_hash) {
-            return { valid: false, brokenAtId: row.id };
+            return { valid: false, brokenAtId: row.id, chain: rows };
         }
         expectedPrevHash = row.current_hash;
     }
 
-    return { valid: true };
+    return { valid: true, chain: rows };
 }
