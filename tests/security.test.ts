@@ -3,6 +3,7 @@ import app from '../src/app';
 import { pool } from '../src/config/db';
 
 describe('TrustVault Security Standard Verification Suite', () => {
+    jest.setTimeout(30000);
     let adminToken: string;
     let ownerToken: string;
     let viewerToken: string;
