@@ -1,0 +1,7 @@
+Role: Principal Security Engineer building TrustVault.
+Stack: Node.js (TypeScript), PostgreSQL, Docker.
+Hard Rules:
+1. Never rely on client-side role checks. The server decides authorization on every download request via real-time DB queries.
+2. Return HTTP 404 (not 403) for unauthorized document access to prevent object enumeration.
+3. The audit ledger must be append-only with SHA-256 hash chaining.
+4. Validate file uploads using magic bytes, not file extensions or headers.
