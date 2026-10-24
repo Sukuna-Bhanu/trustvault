@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsx src/app.ts",
+    "dev": "tsx watch src/app.ts",
+    "migrate": "tsx src/config/migrateAndSeed.ts",
+    "test": "jest tests/security.test.ts --runInBand --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -22,13 +25,18 @@
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.3.0",
     "@types/node": "^26.6.5",
     "@types/pg": "^8.23.1",
+    "@types/supertest": "^7.2.1",
+    "jest": "^30.5.2",
     "nodemon": "^3.1.14",
+    "supertest": "^7.3.1",
+    "ts-jest": "^29.4.15",
     "ts-node": "^10.9.2",
     "tsx": "^4.23.15",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   }
 }
