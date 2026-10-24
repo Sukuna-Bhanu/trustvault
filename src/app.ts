@@ -12,6 +12,22 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+// Health & Root Status
+app.get('/', (req, res) => {
+    res.json({
+        name: 'TrustVault API',
+        status: 'ONLINE',
+        version: '1.0.0',
+        documentation: 'https://github.com/Sukuna-Bhanu/trustvault',
+        endpoints: {
+            auth: '/api/auth/login',
+            documents: '/api/documents',
+            permissions: '/api/permissions',
+            auditLedgerVerify: '/api/audit/verify',
+        },
+    });
+});
+
 // Mount Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/documents', documentRoutes);
