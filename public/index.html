@@ -9,6 +9,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
+    <script>
+        // Session Guard: Redirect to login portal if unauthenticated
+        if (!localStorage.getItem('tv_token')) {
+            window.location.replace('/login.html');
+        }
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -35,10 +41,11 @@
                 <div class="session-user-badge" id="nav-session-user">
                     <span class="role-pill role-none" id="nav-role-badge">NO SESSION</span>
                     <span class="user-email-text" id="nav-user-email">Not Authenticated</span>
-                    <button id="btn-logout" class="btn-icon" title="Clear Session" style="display: none;">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                    <button id="btn-logout" class="btn-xs btn-outline" title="Sign Out of Session" style="display: none; margin-left: 6px;">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
                         </svg>
+                        Logout
                     </button>
                 </div>
             </div>

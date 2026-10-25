@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrustVault | Cryptographic Access Portal</title>
+    <meta name="description" content="Secure zero-trust login portal for TrustVault cryptographic document management.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script>
+        // Pre-check: If already authenticated, redirect immediately to dashboard
+        if (localStorage.getItem('tv_token')) {
+            window.location.replace('/');
+        }
+    </script>
+</head>
+<body>
+    <div class="login-page-wrapper">
+        <div class="login-card">
+            <!-- Brand Header -->
+            <div class="login-header">
+                <div class="login-brand-shield">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="login-title">TrustVault</h1>
+                    <div class="login-badge">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                        Zero-Trust Cryptographic Access Portal
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-body">
+                <!-- Feedback / Security Alert Banner -->
+                <div id="login-alert" class="feedback-banner feedback-error" style="display: none;"></div>
+
+                <!-- Credential Login Form -->
+                <form id="form-login" class="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Identity Email Address</label>
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            class="input-text" 
+                            placeholder="user@trustvault.local" 
+                            required 
+                            autocomplete="email"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Cryptographic Password</label>
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            class="input-text" 
+                            placeholder="••••••••••••" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                    </div>
+
+                    <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; margin-top: 0.35rem;">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                        </svg>
+                        Authenticate Session
+                    </button>
+                </form>
+
+                <!-- Persona Divider -->
+                <div class="login-divider">
+                    <span>Or One-Click Persona Login</span>
+                </div>
+
+                <!-- Fast-Login Persona Cards -->
+                <div class="persona-fast-list">
+                    <button type="button" class="persona-fast-card" data-email="admin@trustvault.local" data-pass="AdminPass123!">
+                        <div class="persona-fast-info">
+                            <span class="persona-fast-title">
+                                System Administrator
+                                <span class="role-pill role-admin">ADMIN</span>
+                            </span>
+                            <span class="persona-fast-email">admin@trustvault.local</span>
+                            <span class="persona-fast-desc">Full access &amp; SHA-256 audit ledger cryptographic verification</span>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted); flex-shrink: 0;">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+
+                    <button type="button" class="persona-fast-card" data-email="owner@trustvault.local" data-pass="OwnerPass123!">
+                        <div class="persona-fast-info">
+                            <span class="persona-fast-title">
+                                Document Owner
+                                <span class="role-pill role-owner">OWNER</span>
+                            </span>
+                            <span class="persona-fast-email">owner@trustvault.local</span>
+                            <span class="persona-fast-desc">Upload documents &amp; issue real-time dynamic grants/revocations</span>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted); flex-shrink: 0;">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+
+                    <button type="button" class="persona-fast-card" data-email="viewer@trustvault.local" data-pass="ViewerPass123!">
+                        <div class="persona-fast-info">
+                            <span class="persona-fast-title">
+                                Restricted Viewer
+                                <span class="role-pill role-viewer">VIEWER</span>
+                            </span>
+                            <span class="persona-fast-email">viewer@trustvault.local</span>
+                            <span class="persona-fast-desc">Zero permissions by default • Tests 404 anti-enumeration concealment</span>
+                        </div>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--text-muted); flex-shrink: 0;">
+                            <polyline points="9 18 15 12 9 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-footer-security">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span>Protected by Real-Time DB Authorization • Anti-Enumeration 404 Concealment</span>
+        </div>
+    </div>
+
+    <!-- Client Script for Portal Authentication -->
+    <script>
+        (function() {
+            const formLogin = document.getElementById('form-login');
+            const inputEmail = document.getElementById('login-email');
+            const inputPassword = document.getElementById('login-password');
+            const btnSubmit = document.getElementById('btn-login-submit');
+            const alertBox = document.getElementById('login-alert');
+
+            function showAlert(message, isSuccess = false) {
+                alertBox.style.display = 'block';
+                alertBox.className = `feedback-banner ${isSuccess ? 'feedback-success' : 'feedback-error'}`;
+                alertBox.textContent = message;
+            }
+
+            async function performLogin(email, password) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = `
+                    <svg class="spinning" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                    </svg>
+                    Authenticating Identity...
+                `;
+
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password }),
+                    });
+
+                    const data = await res.json();
+                    if (!res.ok) {
+                        showAlert(data.error || 'Authentication rejected: Invalid credentials.');
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = `
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                            </svg>
+                            Authenticate Session
+                        `;
+                        return;
+                    }
+
+                    // Save session details
+                    localStorage.setItem('tv_token', data.token);
+                    localStorage.setItem('tv_user', JSON.stringify(data.user));
+
+                    showAlert(`Authenticated as ${data.user.role}! Redirecting to vault...`, true);
+
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 400);
+                } catch (err) {
+                    showAlert('Network or gateway error while reaching TrustVault security service.');
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                        </svg>
+                        Authenticate Session
+                    `;
+                }
+            }
+
+            // Standard Form Submit
+            formLogin.addEventListener('submit', (e) => {
+                e.preventDefault();
+                performLogin(inputEmail.value.trim(), inputPassword.value);
+            });
+
+            // One-Click Fast Persona Login
+            document.querySelectorAll('.persona-fast-card').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const email = btn.dataset.email;
+                    const pass = btn.dataset.pass;
+                    inputEmail.value = email;
+                    inputPassword.value = pass;
+                    performLogin(email, pass);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -127,6 +127,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser to interact 
 
 | Method | Endpoint | Auth | Description |
 | :--- | :--- | :---: | :--- |
+| `GET` | `/login` | None | Dedicated Zero-Trust Login Portal UI (`public/login.html`) |
 | `POST` | `/api/auth/login` | None | Authenticate credentials and receive Bearer JWT |
 | `GET` | `/api/auth/seed-accounts`| None | Retrieve pre-seeded test personas |
 | `GET` | `/api/auth/users` | Bearer | Retrieve system users list with UUIDs and roles |

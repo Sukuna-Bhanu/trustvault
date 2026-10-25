@@ -17,6 +17,11 @@ app.use(express.json());
 const publicDir = path.join(process.cwd(), 'public');
 app.use(express.static(publicDir));
 
+// Dedicated Login Route
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(publicDir, 'login.html'));
+});
+
 // API Status & Health
 app.get('/api/status', (req, res) => {
     res.json({

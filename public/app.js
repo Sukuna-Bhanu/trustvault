@@ -622,10 +622,10 @@
             login(elements.btnSwitchViewer.dataset.email, elements.btnSwitchViewer.dataset.pass);
         });
 
-        // Logout
+        // Logout & Redirect to Login Portal
         elements.btnLogout.addEventListener('click', () => {
             setSession(null, null);
-            showToast('Session cleared', 'info');
+            window.location.href = '/login.html';
         });
 
         // Copy buttons
@@ -779,16 +779,16 @@
     // Initialization
     // ==========================================================================
     async function init() {
+        // Session Guard: If unauthenticated, redirect to dedicated login portal
+        if (!state.token) {
+            window.location.replace('/login.html');
+            return;
+        }
+
         setupEventListeners();
         await fetchUsers();
-
-        // If no token stored, auto-login as OWNER or ADMIN for immediate interactive experience
-        if (!state.token) {
-            await login('admin@trustvault.local', 'AdminPass123!');
-        } else {
-            updateSessionUI();
-            refreshAllData();
-        }
+        updateSessionUI();
+        refreshAllData();
     }
 
     init();
