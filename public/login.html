@@ -37,6 +37,12 @@
                         Zero-Trust Cryptographic Access Portal
                     </div>
                 </div>
+
+                <!-- Dynamic Client-Side Security Status Pill -->
+                <div class="security-status-pill" id="security-status-pill">
+                    <span class="status-dot pulsing"></span>
+                    <span class="security-protocol-text" id="security-protocol-text">Session Protocol: TLS 1.3 | Cryptographic Handshake Ready</span>
+                </div>
             </div>
 
             <div class="login-body">
@@ -59,14 +65,44 @@
 
                     <div class="form-group">
                         <label for="login-password">Cryptographic Password</label>
-                        <input 
-                            type="password" 
-                            id="login-password" 
-                            class="input-text" 
-                            placeholder="••••••••••••" 
-                            required 
-                            autocomplete="current-password"
-                        >
+                        <!-- Password field with Show / Hide Toggle -->
+                        <div class="password-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="login-password" 
+                                class="input-text" 
+                                placeholder="••••••••••••" 
+                                required 
+                                autocomplete="current-password"
+                            >
+                            <button 
+                                type="button" 
+                                id="btn-toggle-password" 
+                                class="btn-password-toggle" 
+                                title="Show password" 
+                                aria-label="Toggle password visibility"
+                            >
+                                <svg id="icon-eye-show" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <svg id="icon-eye-hide" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Responsive Password Strength / Entropy Visual Bar -->
+                        <div class="password-entropy-container" id="password-entropy-container">
+                            <div class="entropy-header">
+                                <span class="entropy-label">Entropy Security</span>
+                                <span class="entropy-grade entropy-none" id="entropy-grade">None</span>
+                            </div>
+                            <div class="entropy-track">
+                                <div class="entropy-fill" id="entropy-fill"></div>
+                            </div>
+                        </div>
                     </div>
 
                     <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; margin-top: 0.35rem;">
@@ -129,15 +165,82 @@
             </div>
         </div>
 
+        <!-- Subtle Footer Links & Security Summary -->
         <div class="login-footer-security">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
             <span>Protected by Real-Time DB Authorization • Anti-Enumeration 404 Concealment</span>
         </div>
+
+        <div class="login-footer-links">
+            <a href="https://github.com/Sukuna-Bhanu/trustvault" target="_blank" rel="noopener noreferrer" class="footer-link">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                </svg>
+                GitHub Repository
+            </a>
+            <span class="footer-separator">&bull;</span>
+            <button type="button" id="btn-open-standards-modal" class="footer-modal-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Security Standards Manifesto
+            </button>
+        </div>
     </div>
 
-    <!-- Client Script for Portal Authentication -->
+    <!-- Security Standards Manifesto Modal -->
+    <div id="modal-standards" class="modal-backdrop" aria-hidden="true" role="dialog" aria-labelledby="modal-standards-title">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2 id="modal-standards-title" class="modal-title">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="M9 12l2 2 4-4"/>
+                    </svg>
+                    TrustVault Security Standards Manifesto
+                </h2>
+                <button type="button" id="btn-close-standards-modal" class="btn-modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Standard 1 -->
+                <div class="standards-card">
+                    <div class="standards-header">
+                        <span class="standards-name">Standard 1: Server-Side Authorization &amp; 404 Concealment</span>
+                        <span class="standards-badge role-admin">Anti-Enumeration</span>
+                    </div>
+                    <p class="standards-desc">
+                        Permissions are never stored inside long-lived JWTs. Access is evaluated in real time against <code>documents</code> and <code>document_grants</code>. Revocation terminates access instantly. All unauthorized access attempts uniformly return <code>404 Not Found</code> (never 403) to eliminate object probing and ID enumeration.
+                    </p>
+                </div>
+
+                <!-- Standard 2 -->
+                <div class="standards-card">
+                    <div class="standards-header">
+                        <span class="standards-name">Standard 2: Cryptographic Audit Ledger</span>
+                        <span class="standards-badge role-owner">SHA-256 Chaining</span>
+                    </div>
+                    <p class="standards-desc">
+                        Every upload, download, permission grant, revocation, and denied attempt is immutably recorded in <code>audit_ledger</code>. Each row computes <code>hash = SHA256(prev_hash + actor + action + doc + status + timestamp)</code> from genesis (<code>0000000000...</code>). The <code>/api/audit/verify</code> endpoint recalculates the entire chain, reporting <code>INTACT</code> or pinpointing tampering.
+                    </p>
+                </div>
+
+                <!-- Standard 3 -->
+                <div class="standards-card">
+                    <div class="standards-header">
+                        <span class="standards-name">Standard 3: Magic-Byte Header Validation</span>
+                        <span class="standards-badge role-viewer">Buffer Inspection</span>
+                    </div>
+                    <p class="standards-desc">
+                        Uploaded files undergo raw byte buffer signature inspection (PDF <code>%PDF</code>, PNG <code>\x89PNG</code>, JPEG <code>\xFF\xD8\xFF</code>). Executables or malicious scripts disguised with spoofed extensions (such as <code>MZ</code> PE headers) are rejected with HTTP 400.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Script for Portal Authentication & Enhancements -->
     <script>
         (function() {
             const formLogin = document.getElementById('form-login');
@@ -145,21 +248,111 @@
             const inputPassword = document.getElementById('login-password');
             const btnSubmit = document.getElementById('btn-login-submit');
             const alertBox = document.getElementById('login-alert');
+            const btnTogglePassword = document.getElementById('btn-toggle-password');
+            const iconEyeShow = document.getElementById('icon-eye-show');
+            const iconEyeHide = document.getElementById('icon-eye-hide');
+            const entropyGrade = document.getElementById('entropy-grade');
+            const entropyFill = document.getElementById('entropy-fill');
+            const modalStandards = document.getElementById('modal-standards');
+            const btnOpenModal = document.getElementById('btn-open-standards-modal');
+            const btnCloseModal = document.getElementById('btn-close-standards-modal');
+            const personaCards = document.querySelectorAll('.persona-fast-card');
 
+            // 1. Show / Hide Password Toggle
+            btnTogglePassword.addEventListener('click', () => {
+                const isPassword = inputPassword.type === 'password';
+                inputPassword.type = isPassword ? 'text' : 'password';
+                iconEyeShow.style.display = isPassword ? 'none' : 'block';
+                iconEyeHide.style.display = isPassword ? 'block' : 'none';
+                btnTogglePassword.title = isPassword ? 'Hide password' : 'Show password';
+                btnTogglePassword.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+            });
+
+            // 2. Responsive Password Strength / Entropy Visual Bar
+            function calculateEntropy(pwd) {
+                if (!pwd) return { score: 0, label: 'None', className: 'entropy-none', width: '0%', color: 'transparent' };
+                let score = 0;
+                if (pwd.length >= 8) score++;
+                if (pwd.length >= 12) score++;
+                if (pwd.length >= 16) score++;
+                if (/[a-z]/.test(pwd)) score++;
+                if (/[A-Z]/.test(pwd)) score++;
+                if (/[0-9]/.test(pwd)) score++;
+                if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+                if (score <= 2) {
+                    return { score, label: 'Weak', className: 'entropy-weak', width: '25%', color: 'var(--color-crimson)' };
+                } else if (score <= 4) {
+                    return { score, label: 'Fair', className: 'entropy-fair', width: '50%', color: 'var(--color-amber)' };
+                } else if (score <= 5) {
+                    return { score, label: 'Good', className: 'entropy-good', width: '75%', color: 'var(--color-cyan)' };
+                } else {
+                    return { score, label: 'Cryptographic', className: 'entropy-strong', width: '100%', color: 'var(--color-emerald)' };
+                }
+            }
+
+            inputPassword.addEventListener('input', () => {
+                const entropy = calculateEntropy(inputPassword.value);
+                entropyGrade.textContent = entropy.label;
+                entropyGrade.className = `entropy-grade ${entropy.className}`;
+                entropyFill.style.width = entropy.width;
+                entropyFill.style.backgroundColor = entropy.color;
+            });
+
+            // 3. Security Standards Manifesto Modal Handlers
+            function openModal() {
+                modalStandards.classList.add('open');
+                modalStandards.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modalStandards.classList.remove('open');
+                modalStandards.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            btnOpenModal.addEventListener('click', openModal);
+            btnCloseModal.addEventListener('click', closeModal);
+            modalStandards.addEventListener('click', (e) => {
+                if (e.target === modalStandards) closeModal();
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modalStandards.classList.contains('open')) {
+                    closeModal();
+                }
+            });
+
+            // 4. Authentication Action & Button Loading State
             function showAlert(message, isSuccess = false) {
                 alertBox.style.display = 'block';
                 alertBox.className = `feedback-banner ${isSuccess ? 'feedback-success' : 'feedback-error'}`;
                 alertBox.textContent = message;
             }
 
+            function setLoadingState(isLoading) {
+                btnSubmit.disabled = isLoading;
+                personaCards.forEach(c => c.disabled = isLoading);
+
+                if (isLoading) {
+                    btnSubmit.innerHTML = `
+                        <svg class="spinning" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+                        </svg>
+                        Verifying credentials...
+                    `;
+                } else {
+                    btnSubmit.innerHTML = `
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
+                        </svg>
+                        Authenticate Session
+                    `;
+                }
+            }
+
             async function performLogin(email, password) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerHTML = `
-                    <svg class="spinning" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-                    </svg>
-                    Authenticating Identity...
-                `;
+                setLoadingState(true);
 
                 try {
                     const res = await fetch('/api/auth/login', {
@@ -171,17 +364,11 @@
                     const data = await res.json();
                     if (!res.ok) {
                         showAlert(data.error || 'Authentication rejected: Invalid credentials.');
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerHTML = `
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
-                            </svg>
-                            Authenticate Session
-                        `;
+                        setLoadingState(false);
                         return;
                     }
 
-                    // Save session details
+                    // Save session details to storage
                     localStorage.setItem('tv_token', data.token);
                     localStorage.setItem('tv_user', JSON.stringify(data.user));
 
@@ -192,13 +379,7 @@
                     }, 400);
                 } catch (err) {
                     showAlert('Network or gateway error while reaching TrustVault security service.');
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = `
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/>
-                        </svg>
-                        Authenticate Session
-                    `;
+                    setLoadingState(false);
                 }
             }
 
@@ -209,12 +390,19 @@
             });
 
             // One-Click Fast Persona Login
-            document.querySelectorAll('.persona-fast-card').forEach(btn => {
+            personaCards.forEach(btn => {
                 btn.addEventListener('click', () => {
                     const email = btn.dataset.email;
                     const pass = btn.dataset.pass;
                     inputEmail.value = email;
                     inputPassword.value = pass;
+                    // Trigger entropy update for filled password
+                    const entropy = calculateEntropy(pass);
+                    entropyGrade.textContent = entropy.label;
+                    entropyGrade.className = `entropy-grade ${entropy.className}`;
+                    entropyFill.style.width = entropy.width;
+                    entropyFill.style.backgroundColor = entropy.color;
+
                     performLogin(email, pass);
                 });
             });

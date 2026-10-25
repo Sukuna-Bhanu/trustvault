@@ -1334,10 +1334,299 @@ body::before {
     text-align: center;
     font-size: 0.725rem;
     color: var(--text-muted);
-    margin-top: 1.5rem;
+    margin-top: 1.25rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
 }
+
+/* Password Toggle Icon */
+.password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-wrapper .input-text {
+    padding-right: 2.75rem;
+}
+
+.btn-password-toggle {
+    position: absolute;
+    right: 0.65rem;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.btn-password-toggle:hover {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+}
+
+/* Security Status Pill */
+.security-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: var(--radius-full);
+    font-size: 0.725rem;
+    font-family: var(--font-mono);
+    color: #7dd3fc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.security-protocol-text {
+    letter-spacing: 0.02em;
+}
+
+/* Password Entropy Visual Bar */
+.password-entropy-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+}
+
+.entropy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.entropy-label {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.entropy-grade {
+    font-family: var(--font-mono);
+    font-size: 0.725rem;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.entropy-track {
+    height: 5px;
+    width: 100%;
+    background: var(--bg-subtle);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    border: 1px solid var(--border-glass);
+}
+
+.entropy-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: var(--radius-full);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+}
+
+/* Entropy Grade Colors */
+.entropy-none { color: var(--text-muted); }
+.entropy-weak { color: var(--color-crimson); }
+.entropy-fair { color: var(--color-amber); }
+.entropy-good { color: var(--color-cyan); }
+.entropy-strong { color: var(--color-emerald); }
+
+/* Footer Links & Standards Modal */
+.login-footer-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+    margin-top: 0.75rem;
+    color: var(--text-muted);
+}
+
+.footer-link,
+.footer-modal-btn {
+    color: var(--text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    transition: color 0.15s ease;
+    padding: 0;
+}
+
+.footer-link:hover,
+.footer-modal-btn:hover {
+    color: var(--color-cyan);
+    text-decoration: underline;
+}
+
+.footer-separator {
+    color: var(--border-highlight);
+}
+
+/* Standards Modal Backdrop & Card */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    padding: 1.5rem;
+}
+
+.modal-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-highlight);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 620px;
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.8);
+    overflow: hidden;
+    transform: translateY(14px) scale(0.98);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-backdrop.open .modal-card {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    background: rgba(30, 41, 59, 0.5);
+    border-bottom: 1px solid var(--border-glass);
+}
+
+.modal-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-sm);
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.btn-modal-close:hover {
+    color: var(--text-primary);
+    background: var(--bg-subtle);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-height: 75vh;
+    overflow-y: auto;
+}
+
+.standards-card {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    transition: border-color 0.2s ease;
+}
+
+.standards-card:hover {
+    border-color: var(--border-highlight);
+}
+
+.standards-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.standards-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.standards-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.standards-desc {
+    font-size: 0.775rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.standards-desc code {
+    font-family: var(--font-mono);
+    color: var(--color-cyan);
+    background: rgba(0, 0, 0, 0.3);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+}
+
+/* Spinning Animation */
+.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 
